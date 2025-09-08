@@ -337,13 +337,13 @@ if uploaded_file is not None:
                 actual_df = pd.DataFrame({
                     "Date": last_20_dates,
                     "Price": last_20_prices,
-                    "Type": "Historical Data"
+                    "Type": "Actual Data"
                 })
 
                 predicted_df = pd.DataFrame({
                     "Date": future_dates,
                     "Price": pred[0],
-                    "Type": "AI Forecast"
+                    "Type": "Prediction Data"
                 })
 
                 predicted_df["Price_lower"] = predicted_df["Price"] - conf_75_intervals
@@ -356,7 +356,7 @@ if uploaded_file is not None:
                 connector_df = pd.DataFrame({
                     "Date": [last_date, future_dates[0]],
                     "Price": [last_price, pred[0][0]],
-                    "Type": ["Historical Data", "AI Forecast"]
+                    "Type": ["Actual Data", "Prediction Data"]
                 })
 
                 connector_ci_df = pd.DataFrame({
@@ -380,7 +380,7 @@ if uploaded_file is not None:
                         y=alt.Y("Price:Q", title="Coconut Nut Price (LKR)"),
                         color=alt.Color(
                             "Type:N",
-                            scale=alt.Scale(domain=["Historical Data", "AI Forecast"], range=["#3b82f6", "#10b981"]),
+                            scale=alt.Scale(domain=["Actual Data", "Prediction Data"], range=["#3b82f6", "#10b981"]),
                             legend=alt.Legend(title="Data Type", orient="bottom")
                         ),
                         tooltip=[
