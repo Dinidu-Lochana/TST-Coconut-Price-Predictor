@@ -124,14 +124,14 @@ st.markdown("""
     }
     
     .prediction-price {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         font-weight: 700;
         color: #10b981;
         margin-bottom: 0.3rem;
     }
     
     .prediction-confidence {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         font-weight: 400;
         color: #047857;
         margin-bottom: 0.3rem;
@@ -458,18 +458,24 @@ if uploaded_file is not None:
                 st.altair_chart(final_chart, use_container_width=True)
 
                 # Weekly Predictions
-                st.markdown('<div class="section-title">🔮 12-Week Price Forecast</div>', unsafe_allow_html=True)
+                st.markdown('<div class="section-title">🔮 12-Week Coconut Price Forecast</div>', unsafe_allow_html=True)
                 
-                cols = st.columns(4)
+                cols = st.columns(3)
                 for i, (price, ci) in enumerate(zip(pred[0], conf_75_intervals), start=1):
-                    col_idx = (i - 1) % 4
+                    col_idx = (i - 1) % 3
                     with cols[col_idx]:
                         st.markdown(f"""
                         <div class="prediction-card">
                             <div class="prediction-week">WEEK {i}</div>
                             <div style="display: flex; justify-content: center; gap: 0.5rem; align-items: baseline;">
+                                <div class="prediction-confidence">LKR per Nut : </div>
                                 <div class="prediction-price">{price:.2f}</div>
-                                <div class="prediction-confidence">± {ci:.2f} LKR</div>
+                                <div class="prediction-confidence">± {ci:.2f}</div>
+                            </div>
+                            <div style="display: flex; justify-content: center; gap: 0.5rem; align-items: baseline;">
+                                <div class="prediction-confidence">LKR per Kg&nbsp;&nbsp;&nbsp;: </div>
+                                <div class="prediction-price">{(price/0.65):.2f}</div>
+                                <div class="prediction-confidence">± {(ci/0.65):.2f}</div>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
@@ -479,9 +485,12 @@ if uploaded_file is not None:
                 # Download Section
                 predicted_csv_df = pd.DataFrame({
                     "Date": future_dates,
-                    "Predicted_Price_LKR": pred[0],
-                    "Lower_Bound_LKR": pred[0] - conf_75_intervals,
-                    "Upper_Bound_LKR": pred[0] + conf_75_intervals
+                    "Predicted Coconut Price (LKR per Nut)": pred[0],
+                    "Lower Bound (LKR per Nut)": pred[0] - conf_75_intervals,
+                    "Upper Bound (LKR per Nut)": pred[0] + conf_75_intervals,
+                    "Predicted Coconut Price (LKR per Kg)": pred[0]/0.65,
+                    "Lower Bound (LKR per Kg)": (pred[0] - conf_75_intervals)/0.65,
+                    "Upper Bound (LKR per Kg)": (pred[0] + conf_75_intervals)/0.65
                 })
 
                 csv_bytes = predicted_csv_df.to_csv(index=False).encode('utf-8')
